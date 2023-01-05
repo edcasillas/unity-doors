@@ -1,0 +1,12 @@
+{
+  "name": "com.ecasillas.doors",
+  "version": "1.0.0",
+  "displayName": "Doors for Unity",
+  "description": "Doors for Unity",
+  "unity": "2022.1",
+  "author": {
+    "name": "Ed Casillas",
+    "email": "ed@exagames-studio.com",
+    "url": "https://edu.itch.io"
+  }
+}
