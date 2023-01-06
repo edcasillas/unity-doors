@@ -72,6 +72,24 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400004, guid: 428d6f60cf4165e49a8d652cdfe91fca, type: 3}
   m_PrefabInstance: {fileID: 5034886082069472036}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5034886082069439876 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: 428d6f60cf4165e49a8d652cdfe91fca, type: 3}
+  m_PrefabInstance: {fileID: 5034886082069472036}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &7579608076675814589
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5034886082069439876}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.0450277, y: 2.0676026, z: 0.047991186}
+  m_Center: {x: 0.0013112426, y: 1.0338013, z: -0.000074117444}
 --- !u!1001 &5034886082318545124
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -86,7 +104,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2250219532086199474, guid: 5f4f953d27bee7d4a80ce3da96fe3775, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2250219532086199474, guid: 5f4f953d27bee7d4a80ce3da96fe3775, type: 3}
       propertyPath: m_LocalPosition.x
@@ -218,6 +236,25 @@ PrefabInstance:
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 233247dd0d4d69e4685b8f8451b04713, type: 3}
+--- !u!1 &5034886083125558410 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: 233247dd0d4d69e4685b8f8451b04713, type: 3}
+  m_PrefabInstance: {fileID: 5034886083125459498}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &3275525261310784484
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5034886083125558410}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 233247dd0d4d69e4685b8f8451b04713, type: 3}
 --- !u!4 &5034886083125846186 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 233247dd0d4d69e4685b8f8451b04713, type: 3}
