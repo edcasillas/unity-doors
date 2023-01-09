@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 namespace Doors {
-	public class DoorController : EnhancedMonoBehaviour {
+	public class DoorController : EnhancedMonoBehaviour, IDoor {
 		[Serializable]
 		private class EventConfiguration {
 			public float Time;
@@ -33,6 +33,12 @@ namespace Doors {
 		#endregion
 
 		#region Public methods
+		[ShowInInspector]
+		public void ToggleState(int dir) {
+			if(IsOpen) Close();
+			else Open(dir);
+		}
+
 		[ShowInInspector]
 		public void Open(int dir) {
 			if (dir != 1 && dir != -1) {
@@ -81,7 +87,7 @@ namespace Doors {
 			forwardDir.y = 0;
 			forwardDir.Normalize();
 			var dot = Vector3.Dot(forwardDir, transform.forward);
-			return dot == 0 ? 0 : (dot > 0 ? 1 : -1);
+			return dot == 0 ? 0 : (dot > 0 ? -1 : 1);
 		}
 
 		public void SetOpeningSound(AudioClip clip) => openConfiguration.AudioClip = clip;
