@@ -1,6 +1,7 @@
 using CommonUtils;
 using CommonUtils.Extensions;
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -25,11 +26,18 @@ namespace Doors {
 
 		[SerializeField]
 		private EventConfiguration closeConfiguration = new() { Time = 0.9f, EaseType = iTween.EaseType.easeOutSine };
+
+		[Tooltip("If this value is zero, the door won't close automatically.")]
+		[SerializeField] private float autoCloseTime;
 		#endregion
 
 		#region Properties
 		public int Id { get; set; }
 		[ShowInInspector] public bool IsOpen { get; private set; }
+		#endregion
+
+		#region Fields
+		private Coroutine closeCoroutine;
 		#endregion
 
 		#region Public methods
@@ -46,6 +54,11 @@ namespace Doors {
 				return;
 			}
 
+			if (closeCoroutine != null) {
+				StopCoroutine(closeCoroutine);
+				closeCoroutine = null;
+			}
+
 			if(openConfiguration.AudioClip) AudioSource.PlayClipAtPoint(openConfiguration.AudioClip, transform.position);
 			iTween.StopByName(gameObject, CLOSE_DOOR_TWEEN_NAME);
 			var desiredRotation = 90f * dir;
@@ -58,10 +71,17 @@ namespace Doors {
 				"oncompletetarget", this.gameObject,
 				"easetype", openConfiguration.EaseType));
 			IsOpen = true;
+
+			if (autoCloseTime > 0) StartCoroutine(waitAndClose());
 		}
 
 		[ShowInInspector]
 		public void Close() {
+			if (closeCoroutine != null) {
+				StopCoroutine(closeCoroutine);
+				closeCoroutine = null;
+			}
+
 			if(closeConfiguration.AudioClip) AudioSource.PlayClipAtPoint(closeConfiguration.AudioClip, transform.position);
 			iTween.StopByName(gameObject, OPEN_DOOR_TWEEN_NAME);
 			iTween.RotateTo(hingeTransform.gameObject, iTween.Hash(
@@ -102,6 +122,12 @@ namespace Doors {
 		private void OnDoorClosed() {
 			this.DebugLog($"Door {Id} ({name}) finished closing");
 			closeConfiguration.OnFinished?.Invoke();
+		}
+
+		private IEnumerator waitAndClose() {
+			yield return new WaitForSeconds(autoCloseTime);
+			Close();
+			closeCoroutine = null;
 		}
 	}
 }
