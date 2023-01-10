@@ -29,6 +29,9 @@ namespace Doors {
 
 		[Tooltip("If this value is zero, the door won't close automatically.")]
 		[SerializeField] private float autoCloseTime;
+
+		[Tooltip("Check this field if the door appears to open opposite to the player's position.")]
+		[SerializeField] private bool invertOpenDirection;
 		#endregion
 
 		#region Properties
@@ -107,7 +110,9 @@ namespace Doors {
 			forwardDir.y = 0;
 			forwardDir.Normalize();
 			var dot = Vector3.Dot(forwardDir, transform.forward);
-			return dot == 0 ? 0 : (dot > 0 ? -1 : 1);
+			var result = dot == 0 ? 0 : (dot > 0 ? 1 : -1);
+			if (invertOpenDirection) result *= -1;
+			return result;
 		}
 
 		public void SetOpeningSound(AudioClip clip) => openConfiguration.AudioClip = clip;
