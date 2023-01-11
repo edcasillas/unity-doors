@@ -3,8 +3,9 @@ using UnityEngine;
 
 namespace Doors {
 	public interface IDoor: IUnityComponent {
-		public void ToggleState(int dir);
-		public void Open(int dir);
+		bool IsLocked { get; set; }
+		bool ToggleState(int dir);
+		public bool Open(int dir);
 		public void Close();
 		public int GetOpeningDirection(Vector3 forwardDir);
 	}

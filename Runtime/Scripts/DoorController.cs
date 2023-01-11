@@ -8,11 +8,15 @@ using UnityEngine.Events;
 namespace Doors {
 	public class DoorController : EnhancedMonoBehaviour, IDoor {
 		[Serializable]
-		private class EventConfiguration {
-			public float Time;
-			public iTween.EaseType EaseType;
+		private class FeedbackConfiguration {
 			public AudioClip AudioClip;
 			public UnityEvent OnFinished;
+		}
+
+		[Serializable]
+		private class EventConfiguration : FeedbackConfiguration {
+			public float Time;
+			public iTween.EaseType EaseType;
 		}
 
 		private const string OPEN_DOOR_TWEEN_NAME = "openDoor";
@@ -21,40 +25,76 @@ namespace Doors {
 		#region Inspector fields
 		[SerializeField] private Transform hingeTransform;
 
+		[Tooltip("If this value is zero, the door won't close automatically.")]
+		[SerializeField] private float autoCloseTime;
+
+		[Tooltip("Check this field if the door appears to open opposite to the player's position.")]
+		[SerializeField] private bool invertOpenDirection;
+
+		[SerializeField] private bool lockedOnStart;
+
+		[Header("Events")]
 		[SerializeField]
 		private EventConfiguration openConfiguration = new() { Time = 1.5f, EaseType = iTween.EaseType.easeInOutSine };
 
 		[SerializeField]
 		private EventConfiguration closeConfiguration = new() { Time = 0.9f, EaseType = iTween.EaseType.easeOutSine };
 
-		[Tooltip("If this value is zero, the door won't close automatically.")]
-		[SerializeField] private float autoCloseTime;
+		[SerializeField] private FeedbackConfiguration lockedConfiguration;
 
-		[Tooltip("Check this field if the door appears to open opposite to the player's position.")]
-		[SerializeField] private bool invertOpenDirection;
+		[SerializeField] private FeedbackConfiguration onLock;
+		[SerializeField] private FeedbackConfiguration onUnlock;
 		#endregion
 
 		#region Properties
 		public int Id { get; set; }
 		[ShowInInspector] public bool IsOpen { get; private set; }
+
+		private bool locked;
+
+		[ShowInInspector(EnableSetter = true)]
+		public bool IsLocked {
+			get => locked;
+			set {
+				locked = value;
+				if (locked) {
+					if (onLock.AudioClip) AudioSource.PlayClipAtPoint(onLock.AudioClip, transform.position);
+					onLock.OnFinished?.Invoke();
+				} else {
+					if (onUnlock.AudioClip) AudioSource.PlayClipAtPoint(onUnlock.AudioClip, transform.position);
+					onUnlock.OnFinished?.Invoke();
+				}
+			}
+		}
 		#endregion
 
 		#region Fields
 		private Coroutine closeCoroutine;
 		#endregion
 
+		private void Start() => IsLocked = lockedOnStart;
+
 		#region Public methods
 		[ShowInInspector]
-		public void ToggleState(int dir) {
-			if(IsOpen) Close();
-			else Open(dir);
+		public bool ToggleState(int dir) {
+			if (IsOpen) {
+				Close();
+				return true;
+			}
+			return Open(dir);
 		}
 
 		[ShowInInspector]
-		public void Open(int dir) {
+		public bool Open(int dir) {
+			if (IsLocked) {
+				if(lockedConfiguration.AudioClip) AudioSource.PlayClipAtPoint(lockedConfiguration.AudioClip, transform.position);
+				lockedConfiguration.OnFinished?.Invoke();
+				return false;
+			}
+
 			if (dir != 1 && dir != -1) {
 				this.LogError($"Parameter {nameof(dir)} must be either 1 or -1 to specify the opening direction of the door.");
-				return;
+				return false;
 			}
 
 			if (closeCoroutine != null) {
@@ -76,6 +116,8 @@ namespace Doors {
 			IsOpen = true;
 
 			if (autoCloseTime > 0) StartCoroutine(waitAndClose());
+
+			return true;
 		}
 
 		[ShowInInspector]
