@@ -56,6 +56,7 @@ namespace Doors {
 		public bool IsLocked {
 			get => locked;
 			set {
+				if(locked == value) return;
 				locked = value;
 				if (locked) {
 					if (onLock.AudioClip) AudioSource.PlayClipAtPoint(onLock.AudioClip, transform.position);
